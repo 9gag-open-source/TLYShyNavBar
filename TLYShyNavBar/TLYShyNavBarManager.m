@@ -51,6 +51,8 @@ static inline CGFloat AACStatusBarHeight()
 
 @property (nonatomic, readonly) BOOL isViewControllerVisible;
 
+@property (nonatomic, weak) UIRefreshControl *refreshControl;
+
 @end
 
 @implementation TLYShyNavBarManager
@@ -159,6 +161,12 @@ static inline CGFloat AACStatusBarHeight()
     [self cleanup];
     [self layoutViews];
     
+    for(UIView *view in self.scrollView.subviews){
+        if([view isKindOfClass:[UIRefreshControl class]]){
+            _refreshControl = ((UIRefreshControl *)view);
+            break;
+        }
+    }
 }
 
 - (CGRect)extensionViewBounds
@@ -175,6 +183,10 @@ static inline CGFloat AACStatusBarHeight()
 
 - (BOOL)_shouldHandleScrolling
 {
+    if([_refreshControl isRefreshing]){
+        return NO;
+    }
+    
     CGRect scrollFrame = UIEdgeInsetsInsetRect(self.scrollView.bounds, self.scrollView.contentInset);
     CGFloat scrollableAmount = self.scrollView.contentSize.height - CGRectGetHeight(scrollFrame);
     BOOL scrollViewIsSuffecientlyLong = (scrollableAmount > self.navBarController.totalHeight);
@@ -303,7 +315,7 @@ static inline CGFloat AACStatusBarHeight()
     
     self.previousScrollInsets = scrollInsets;
     
-//    [self.navBarController expand];
+    [self.navBarController expand];
     [self.extensionViewContainer.superview bringSubviewToFront:self.extensionViewContainer];
 
 //    self.scrollView.contentInset = scrollInsets;
