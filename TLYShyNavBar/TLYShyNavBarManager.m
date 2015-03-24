@@ -417,6 +417,16 @@ static char shyNavBarManagerKey;
     return shyNavBarManager;
 }
 
+- (TLYShyNavBarManager *)getShyNavBarManagerOrNil
+{
+    // used in dealloc func in view controllers
+    id shyNavBarManager = objc_getAssociatedObject(self, &shyNavBarManagerKey);
+    if (shyNavBarManager && [shyNavBarManager isKindOfClass:TLYShyNavBarManager.class]) {
+        return shyNavBarManager;
+    }
+    return nil;
+}
+
 #pragma mark - Private methods
 
 /* Internally, we need to access the variable without creating it */
