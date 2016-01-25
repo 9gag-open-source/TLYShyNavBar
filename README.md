@@ -1,6 +1,9 @@
 
 # TLYShyNavBar
 
+![Pod Version](https://cocoapod-badges.herokuapp.com/v/TLYShyNavBar/badge.png)
+![Pod License](https://img.shields.io/badge/license-MIT-blue.svg)
+
 This component helps you mimick the navigation bar auto scrolling that you see in the facebook, instagram and other apps. Not only that, but with the ability to add an additional extension that scrolls along as well! It is designed for **ease of use**, and is battle tested in our own [Telly app](https://itunes.apple.com/us/app/telly/id524552885?mt=8)<sup>[1]</sup>!
 
 ![Battle Tested!!](resources/battle-tested-demo.gif)
@@ -16,46 +19,41 @@ This component helps you mimick the navigation bar auto scrolling that you see i
 + **[A Deeper Look](#a-deeper-look)**: You're invensted in this now and want to make the most out of it.
 + **[How it Works](#how-it-works)**: The deep stuff...
 + **[Remarks](#remarks)**: Read this before losing all hope.
++ **[Contributors](#contributors)**: Developers that donated their valuable time.
++ **[Author](#author)**: Watashi-da!
 + **[Similar Projects](#similar-projects)**: Similar projects that influenced the project in some way.
 
 ## Features
 
-+ Optional extension view to the `UINavigationBar`!
+| Feature | Demo |
+|---------|---------------------------------------------------------------------------------------------------------
+| Optional extension view to the `UINavigationBar`!                               | ![](resources/ShyNavBar-1.gif) |
+| Auto expand if below threshold                                                  | ![](resources/ShyNavBar-2.gif) |
+| Auto contract if below threshold                                                | ![](resources/ShyNavBar-3.gif) |
+| Very responsive, resilient and robust                                           | ![](resources/ShyNavBar-4.gif) |
+| Adjustable expansion resistance                                                 | ![](resources/ShyNavBar-5.gif) |
+| Plays well with `pushViewController`                                            | ![](resources/ShyNavBar-6.gif) |
+| Sticky extension view (Thanks @yukaliao !)                                      | ![](resources/ShyNavBar-7.gif) |
+| Sticky navigation bar (Thanks [@TiagoVeloso](https://github.com/TiagoVeloso)!)  | ![](resources/ShyNavBar-9.gif) |
+| Fade the entire navbar (Thanks [__@longsview__](https://github.com/longsview)!) | ![](resources/ShyNavBar-8.gif) |
 
-![](resources/ShyNavBar-1.gif)
+You can test some of these features in the Objective-C demo:
 
-+ Auto expand if below threshold
-
-![](resources/ShyNavBar-2.gif)
-
-+ Auto contract if below threshold
-
-![](resources/ShyNavBar-3.gif)
-
-+ Very responsive, resilient and robust
-
-![](resources/ShyNavBar-4.gif)
-
-+ Adjustable expansion resistance
-
-![](resources/ShyNavBar-5.gif)
-
-+ Plays well with `pushViewController`
-
-![](resources/ShyNavBar-6.gif)
+![](resources/features-testing.png)
 
 ## Quick Start
 
 1. Get the component
-  + [CocoaPods](http://cocoapods.org)
-      * Add the following to you [Podfile](http://guides.cocoapods.org/using/the-podfile.html) `pod TLYShyNavBar`
+  + Using [CocoaPods](http://cocoapods.org):<br />
+    Add the following to you [Podfile](http://guides.cocoapods.org/using/the-podfile.html) `pod 'TLYShyNavBar'`<br />
+    Import the header `#import <TLYShyNavBar/TLYShyNavBarManager.h>`
 
-  + Download the project/git submodules, and drag the `TLYShyNavBar` folder to your project.
 
-2. `#import "TLYShyNavBarManager.h"` 
-  + I suggest adding it to your pch file, or wherever you want to use the component.
+  + Using Submodules:<br />
+    Download the project/git submodules, and drag the `TLYShyNavBar` folder to your project. <br />
+    Import the header `#import "TLYShyNavBarManager.h"`
  
-3. Write one line of code to get started!!
+2. Write one line of code to get started!!
 
 ```objc
 /* In your UIViewController viewDidLoad or after creating the scroll view. */
@@ -63,6 +61,33 @@ self.shyNavBarManager.scrollView = self.scrollView;
 ```
 
 **IMPORTANT!!** If you are assigning a delegate to your scrollView, do that **before** assigning the scrollView to the `TLYShyNavBarManager`! To learn more, [see below](#how-it-works).
+
+### Using TLYShyNavBar in Swift
+If you are building apps in Swift and targeting apps to iOS7 Apples [hidesBarsOnSwipe](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UINavigationController_Class/#//apple_ref/occ/instp/UINavigationController/hidesBarsOnSwipe) will not work because it is in an iOS 8 feature.  As an alternative you can use TLYShyNavBar component in lieu of Apples feature.
+
+To use this component in Swift
+
+1. Clone this git repository locally: `git clone https://github.com/telly/TLYShyNavBar.git`
+2. Copy the `TLYShyNavBar` directory into your Swift project. <br />![](resources/Swift-project.png)
+3. Create a new header file called `Bridging-Header.h` and add the headers from `TLYShyNavBar` folder.[see headers below](#bridge-headers).
+4. Add the bridging header file to the project's build settings.  Search `Bridging Header` in `Build Settings` and add `Bridging-Header.h`. <br />![](resources/Bridged-Header.png)
+
+Now your project is setup to use the TLYShyNavBar component.  Next all you need to do is set the scrollview property in your UIViewController like it was an Objective-c project.
+
+```
+/* In your UIViewController viewDidLoad or after creating the scroll view. */
+self.shyNavBarManager.scrollView = self.scrollView;
+```
+
+#### Bridge Headers
+```
+#import "TLYShyNavBarManager.h"
+#import "TLYShyViewController.h"
+#import "TLYDelegateProxy.h"
+#import "NSObject+TLYSwizzlingHelpers.h"
+#import "UIViewController+BetterLayoutGuides.h"
+```
+
 
 ## Design Goals
 
@@ -91,6 +116,13 @@ You can assign your own extension view, and it will appear right beneath the nav
 [self.shyNavBarManager setExtensionView:self.toolbar];
 ```
 
+To stick the extension view to the top and have it remain visible when the navigation bar has been hidden:
+
+```objc
+/* Also in your UIViewController subclass */
+[self.shyNavBarManager setStickyExtensionView:YES];
+```
+
 #### CONTROLLING THE RESISTANCE
 
 When you starting scrolling up (going down the view) or scrolling down (going up the view), you may want the navigation bar to hold off for a certain amount (tolerance) before changing states. (i.e. if the user scrolls down 10 px, don't immediately start showing the contracted navigation bar, but wait till he scrolls, say, 100 px).
@@ -107,7 +139,7 @@ You can control that using the following properties on the `shyNavBarManager`:
 
 ## How it Works
 
-OK, I'll admit that I added this section purely to rant about how this project came together, and the desicion making process behind it.
+OK, I'll admit that I added this section purely to rant about how this project came together, and the decision making process behind it.
 
 #### THE BASICS
 
@@ -139,15 +171,17 @@ When you assign the `scrollView` property to the TLYShyNavBarManager, we attach 
 
 #### THE DRAWER CONCEPT
 
-The way the offsets are applied to the navigation bar and extension view is through an elegent linked list implementation. We set the offset to the first node (navigation bar), and ...
+The way the offsets are applied to the navigation bar and extension view is through an elegant doubly linked list implementation. We set the offset to the first node (navigation bar), and ...
 
 + If it is contracting:
-  - We pass the contraction amount to the next node, and it returned a residual amount.
+  - We pass the contraction amount to the next node, and it returns a residual amount.
 
 + If we are expanding:
   - We process the offset in the first node, and pass the residual to the next node. 
 
 It is a simple concept. Say we dragged down by 100 px, and the nav bar was contracted. The navigation bar would take 64 px of that to expand, and then pass the residual 36 px to the next node (extension view) to calculate its offset. The same goes for contracting, but it starts from the last node, all the way up to the navigation bar.
+
+We also add a parent relationship for a single purpose: Make the child follow its parent's offset. So, if the parent (e.g. navigation bar) is scrolling away to the top, we make sure the child accommodates the parent's offset in the calculation, so it appears as if the child is a subview of the parent.
 
 *Note:* Even though there might be an illusion that the views are expanding and contracting, it's really just a translation (scrolling) of the views. There might be an advantage to actually resizing the bounds, so the extension view doesn't appear behind the navigation bar, for example, so that approach might be explored in the future.
 
@@ -169,8 +203,35 @@ shyManager.expansionResistance = 777.f;
 viewController.shyNavBarManager = shyManager;
 ```
 
+## Contributors
+
+Thanks for everyone who opened an issue, shot me an email, and submitted a PR. Special thanks to those who submitted code that got checked in!
+
+_Sorted vaguely based on contribution according to [this](http://www.commandlinefu.com/commands/view/4519/list-all-authors-of-a-particular-git-project)_
+
++ Evan D. Schoenberg, M.D 
++ Tony Nuzzi 
++ Xurxo Méndez Pérez 
++ Richard Das 
++ Garret Riddle 
++ Aleksey Kozhevnikov 
++ modastic 
++ Yukan 
++ Remigiusz Herba 
++ Nicholas Long 
++ Koen Buddelmeijer 
++ Anton Sokolchenko 
++ Andrii Novoselskyi 
++ Alek Slater 
++ Aaron Satterfield 
+
+## Author
+
+Mazyod ([@Mazyod](http://twitter.com/mazyod))
+
 ## Similar Projects
 
++ [BLKFlexibleHeightBar](https://github.com/bryankeller/BLKFlexibleHeightBar)
 + [AMScrollingNavbar](https://github.com/andreamazz/AMScrollingNavbar)
 + [GTScrollNavigationBar](https://github.com/luugiathuy/GTScrollNavigationBar)
 + [JKAutoShrinkView](https://github.com/fsjack/JKAutoShrinkView)
