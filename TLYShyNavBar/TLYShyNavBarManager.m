@@ -222,12 +222,12 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
     [self cleanup];
     [self layoutViews];
     
-    for(UIView *view in self.scrollView.subviews){
-        if([view isKindOfClass:[UIRefreshControl class]]){
-            _refreshControl = ((UIRefreshControl *)view);
-            break;
-        }
-    }
+//    for(UIView *view in self.scrollView.subviews){
+//        if([view isKindOfClass:[UIRefreshControl class]]){
+//            _refreshControl = ((UIRefreshControl *)view);
+//            break;
+//        }
+//    }
     
     [_scrollView addObserver:self forKeyPath:@"contentSize" options:0 context:kTLYShyNavBarManagerKVOContext];
 }
@@ -448,8 +448,12 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
     
     self.previousScrollInsets = scrollInsets;
     
-    [self.navBarController expand];
-    [self.extensionViewContainer.superview bringSubviewToFront:self.extensionViewContainer];
+    [UIView animateWithDuration:[self isViewControllerVisible]? 0.3 : 0.0 animations:^{
+        [self.navBarController expand];
+    } completion:^(BOOL finished) {
+        [self.extensionViewContainer.superview bringSubviewToFront:self.extensionViewContainer];
+    }];
+    
     
 //    self.scrollView.contentInset = scrollInsets;
 //    self.scrollView.scrollIndicatorInsets = scrollInsets;
@@ -459,18 +463,12 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
 
 - (void)cleanup
 {
-    if([self isViewControllerVisible]){
-        [UIView animateWithDuration:0.3 animations:^{
-            [self.navBarController expand];
-        } completion:^(BOOL finished) {
-            self.previousYOffset = NAN;
-            self.previousScrollInsets = UIEdgeInsetsZero;
-        }];
-    } else {
+    [UIView animateWithDuration:[self isViewControllerVisible]? 0.3 : 0.0 animations:^{
         [self.navBarController expand];
+    } completion:^(BOOL finished) {
         self.previousYOffset = NAN;
         self.previousScrollInsets = UIEdgeInsetsZero;
-    }
+    }];
 }
 
 #pragma mark - UIScrollViewDelegate methods
