@@ -52,6 +52,7 @@
  */
 @property (nonatomic, getter = isAlphaFadeEnabled) BOOL alphaFadeEnabled;
 
+- (void)setScrollView:(UIScrollView *)scrollView shouldExpand:(BOOL)shouldExpand;
 @end
 
 
@@ -71,5 +72,7 @@
 /* Initially, this is nil, but created for you when you access it */
 @property (nonatomic, strong) TLYShyNavBarManager *shyNavBarManager;
 - (TLYShyNavBarManager *)getShyNavBarManagerOrNil;
+
+
 
 @end

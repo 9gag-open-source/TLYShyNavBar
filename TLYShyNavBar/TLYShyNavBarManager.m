@@ -154,6 +154,10 @@ static inline CGFloat AACStatusBarHeight()
 
 - (void)setScrollView:(UIScrollView *)scrollView
 {
+    [self setScrollView:scrollView shouldExpand:YES];
+}
+
+- (void)setScrollView:(UIScrollView *)scrollView shouldExpand:(BOOL)shouldExpand {
     if (_scrollView.delegate == self.delegateProxy)
     {
         _scrollView.delegate = self.delegateProxy.originalDelegate;
@@ -166,8 +170,9 @@ static inline CGFloat AACStatusBarHeight()
         self.delegateProxy.originalDelegate = _scrollView.delegate;
         _scrollView.delegate = (id)self.delegateProxy;
     }
-    [self cleanup];
-    [self layoutViews];
+    
+    [self cleanup:shouldExpand];
+    [self layoutViews:shouldExpand];
     
     for(UIView *view in self.scrollView.subviews){
         if([view isKindOfClass:[UIRefreshControl class]]){
@@ -175,6 +180,7 @@ static inline CGFloat AACStatusBarHeight()
             break;
         }
     }
+
 }
 
 - (CGRect)extensionViewBounds
@@ -313,6 +319,11 @@ static inline CGFloat AACStatusBarHeight()
 
 - (void)layoutViews
 {
+    [self layoutViews:YES];
+}
+
+- (void)layoutViews:(BOOL)shouldExpand
+{
     UIEdgeInsets scrollInsets = self.scrollView.contentInset;
     scrollInsets.top = CGRectGetHeight(self.extensionViewContainer.bounds) + self.viewController.tly_topLayoutGuide.length;
     
@@ -323,20 +334,28 @@ static inline CGFloat AACStatusBarHeight()
     
     self.previousScrollInsets = scrollInsets;
     
-    [self.navBarController expand];
+    if (shouldExpand) {
+        [self.navBarController expand];
+    }
+    
     [self.extensionViewContainer.superview bringSubviewToFront:self.extensionViewContainer];
-
-//    self.scrollView.contentInset = scrollInsets;
-//    self.scrollView.scrollIndicatorInsets = scrollInsets;
 }
 
 - (void)cleanup
 {
-    [self.navBarController expand];
+    [self cleanup:NO];
+}
+
+- (void)cleanup:(BOOL)shouldExpand
+{
+    if (shouldExpand) {
+        [self.navBarController expand];
+    }
     
     self.previousYOffset = NAN;
     self.previousScrollInsets = UIEdgeInsetsZero;
 }
+
 
 #pragma mark - UIScrollViewDelegate methods
 
