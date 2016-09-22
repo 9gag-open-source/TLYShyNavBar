@@ -343,7 +343,7 @@ static inline CGFloat AACStatusBarHeight()
 
 - (void)cleanup
 {
-    [self cleanup:NO];
+    [self cleanup:YES];
 }
 
 - (void)cleanup:(BOOL)shouldExpand
