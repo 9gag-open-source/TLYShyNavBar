@@ -7,8 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import "TLYShyNavBarFade.h"
 
-/*  CLASS DESCRIPTION:
+
+@protocol TLYShyNavBarManagerDelegate;
+
+/** CLASS DESCRIPTION:
  *  ==================
  *      Manages the relationship between a scrollView and a view
  *  controller. Must be instantiated and assigned the scrollView
@@ -19,7 +24,6 @@
  *  viewController.shyNavManager = ...;
  *
  */
-
 @interface TLYShyNavBarManager : NSObject
 
 /* The view controller that is part of the navigation stack
@@ -30,7 +34,7 @@
 /* The scrollView subclass that will drive the contraction/expansion 
  * IMPORTANT: set this property AFTER assigning its delegate, if needed!
  */
-@property (nonatomic, weak) UIScrollView *scrollView;
+@property (nonatomic, strong) UIScrollView *scrollView;
 
 /* The extension view to be shown beneath the navbar
  */
@@ -41,22 +45,60 @@
  */
 @property (nonatomic, readonly) CGRect extensionViewBounds;
 
-/* Control the resistance when scrolling up/down before the navbar 
+/* Make the navigation bar stick to the top without collapsing
+ * Deatuls to NO
+ */
+@property (nonatomic) BOOL stickyNavigationBar;
+
+/* Make the extension view stick to the bottom of the navbar without
+ * collapsing
+ * Defaults to NO
+ */
+@property (nonatomic) BOOL stickyExtensionView;
+
+/* Control the resistance when scrolling up/down before the navbar
  * expands/contracts again.
  */
 @property (nonatomic) CGFloat expansionResistance;      // default 200
 @property (nonatomic) CGFloat contractionResistance;    // default 0
 
-/* Turn on or off the alpha fade as the navbar contracts/expands. 
- * Defaults to YES
+/* Choose how the navbar fades as it contracts/expands.
+ * Defaults to FadeSubviews
  */
-@property (nonatomic, getter = isAlphaFadeEnabled) BOOL alphaFadeEnabled;
+@property (nonatomic) TLYShyNavBarFade fadeBehavior;
 
-- (void)setScrollView:(UIScrollView *)scrollView shouldExpand:(BOOL)shouldExpand;
+/* Use this to set if the controller have any kind of custom refresh control
+ */
+@property (nonatomic) BOOL hasCustomRefreshControl;
+
+/* Set NO to disable shyNavBar behavior temporarily.
+ * Defaults to NO
+ */
+@property (nonatomic) BOOL disable;
+
+/* Use this to be notified about contraction and expansion events.
+ */
+@property (nonatomic, weak) id<TLYShyNavBarManagerDelegate> delegate;
+
+@end
+
+/* PROTOCOL DESCRIPTION:
+ * =====================
+ *     This protocol is used to notify an optional TLYShyNavBarManager's delegate
+ * when a contraction or expansion finishes animating.
+ */
+@protocol TLYShyNavBarManagerDelegate <NSObject>
+
+@optional
+
+- (void)shyNavBarManagerDidBecomeFullyContracted:(TLYShyNavBarManager *) shyNavBarManager;
+- (void)shyNavBarManagerDidFinishContracting:(TLYShyNavBarManager *) shyNavBarManager;
+- (void)shyNavBarManagerDidFinishExpanding:(TLYShyNavBarManager *) shyNavBarManager;
+
 @end
 
 
-/*  CATEGORY DESCRIPTION:
+/** CATEGORY DESCRIPTION:
  *  =====================
  *      The category described in the TLYShyNavBarManager usage, and it
  *  simply uses associated objects to attatch a TLYShyNavBar to the 
@@ -74,5 +116,16 @@
 - (TLYShyNavBarManager *)getShyNavBarManagerOrNil;
 
 
+
+/*
+ * Set the TLYShyNavBarManager while also specifying a view controller
+ */
+- (void)setShyNavBarManager:(TLYShyNavBarManager *)shyNavBarManager
+             viewController:(UIViewController *)viewController;
+
+/* Use this to find out if a TLYShyNavBarManager instance was associated
+ * to this view controller, without triggering its creation and association.
+ */
+- (BOOL)isShyNavBarManagerPresent;
 
 @end

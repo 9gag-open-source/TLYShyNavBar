@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "TLYShyNavBar"
-  s.version      = "0.9.8"
+  s.version      = "1.1.1"
   s.summary      = "TLYShyNavBar makes your UINavigationBar expand/shrink by adding just a single line. It also comes with extension view support!"
 
   s.description  = <<-DESC
@@ -35,7 +35,7 @@ Pod::Spec.new do |s|
                    DESC
 
   s.homepage     = "https://github.com/telly/TLYShyNavBar"
-  s.screenshots  = "https://raw.githubusercontent.com/telly/TLYShyNavBar/master/resources/battle-tested-demo.gif", "https://raw.githubusercontent.com/telly/TLYShyNavBar/master/resources/ShyNavBar-1.gif"
+  s.screenshots  = "http://imgur.com/dv1LK1v.png"
 
 
   # ―――  Spec License  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -81,7 +81,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/telly/TLYShyNavBar.git", :tag => "0.9.8" }
+  s.source       = { :git => "https://github.com/telly/TLYShyNavBar.git", :tag => "1.1.1" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -95,7 +95,7 @@ Pod::Spec.new do |s|
   s.source_files  = "TLYShyNavBar/**/*"
   s.exclude_files = ""
 
-  s.public_header_files = "TLYShyNavBar/TLYShyNavBarManager.h"
+  s.public_header_files = "TLYShyNavBar/*.h"
 
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

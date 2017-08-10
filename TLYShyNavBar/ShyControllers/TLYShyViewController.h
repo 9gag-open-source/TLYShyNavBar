@@ -7,11 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import "TLYShyParent.h"
+#import "TLYShyChild.h"
+#import "../TLYShyNavBarFade.h"
+
 
 extern const CGFloat contractionVelocity;
 
 typedef CGPoint(^TLYShyViewControllerExpandedCenterBlock)(UIView *view);
 typedef CGFloat(^TLYShyViewControllerContractionAmountBlock)(UIView *view);
+
 
 /*  CLASS DESCRIPTION:
  *  ==================
@@ -24,26 +30,30 @@ typedef CGFloat(^TLYShyViewControllerContractionAmountBlock)(UIView *view);
  *  child to an already childified node is not supported.
  */
 
-@interface TLYShyViewController : NSObject
+@interface TLYShyViewController : NSObject <TLYShyChild>
 
-@property (nonatomic, weak) TLYShyViewController *child;
+@property (nonatomic, weak) id<TLYShyChild> child;
+@property (nonatomic, weak) id<TLYShyParent> parent;
+@property (nonatomic, weak) TLYShyViewController *subShyController;
 @property (nonatomic, weak) UIView *view;
 
-@property (nonatomic, copy) TLYShyViewControllerExpandedCenterBlock expandedCenter;
-@property (nonatomic, copy) TLYShyViewControllerContractionAmountBlock contractionAmount;
+@property (nonatomic) TLYShyNavBarFade fadeBehavior;
 
-@property (nonatomic) BOOL hidesSubviews;
-@property (nonatomic) BOOL hidesAfterContraction;
+/* Sticky means it will always stay in expanded state
+ */
+@property (nonatomic) BOOL sticky;
 
-@property (nonatomic) BOOL alphaFadeEnabled;
-
-@property (nonatomic, readonly) CGFloat totalHeight;
-
+- (void)offsetCenterBy:(CGPoint)deltaPoint;
 - (CGFloat)updateYOffset:(CGFloat)deltaY;
 
 - (CGFloat)snap:(BOOL)contract;
+- (CGFloat)snap:(BOOL)contract completion:(void (^)())completion;
 
 - (CGFloat)expand;
 - (CGFloat)contract;
 
+@end
+
+
+@interface TLYShyViewController (AsParent) <TLYShyParent>
 @end
