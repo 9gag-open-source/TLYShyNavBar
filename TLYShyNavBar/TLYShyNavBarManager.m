@@ -161,6 +161,7 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
 
     if (index != NSNotFound) {
         self.scrollViewController.refreshControl = [scrollView.subviews objectAtIndex:index];
+        self.refreshControl = self.scrollViewController.refreshControl;
     }
 
     if (_scrollView.delegate != self.delegateProxy)
